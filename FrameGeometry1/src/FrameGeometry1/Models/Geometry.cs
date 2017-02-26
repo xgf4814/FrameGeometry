@@ -25,6 +25,7 @@ namespace FrameGeometry1.Models
         public double HTA { get; set; }
         [Display(Name = "head tube length")]
         public double HTL { get; set; }
+        [Display(Name = "standover (N/A for MTB, use 0)")]
         public double standover { get; set; }
         public string color { get; set; }
         public bool enabled { get; set; }

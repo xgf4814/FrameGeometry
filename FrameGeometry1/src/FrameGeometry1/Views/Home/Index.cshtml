@@ -44,7 +44,7 @@
     var standover;
     var diameter;
     class BikeGeometry {
-        constructor(bbdrop, stack, reach, wheelbase, chainstay, STA, STL, HTA, HTL, standover, diameter) {
+        constructor(bbdrop, stack, reach, wheelbase, chainstay, STA, STL, HTA, HTL, diameter, standover) {
             this.bbdrop = bbdrop;
             this.stack = stack;
             this.reach = reach;
@@ -105,7 +105,7 @@
         var seatTubeAlmostTopY = bby - y;
         var FD_X = RD_X + geometry.wheelbase * scale;
         var FD_Y = RD_Y;
-        var standoverY = (RD_Y + (geometry.diameter/2) * scale) - geometry.standover * scale;
+        var standoverY = (RD_Y + (((geometry.diameter + 0)* scale)/2)) - ((geometry.standover) * scale);
 
         var m_toptube = (headTubeTopY - standoverY) / (headTubeTopX - bbx);
         //var m_toptube = (standoverY - headTubeTopY) / (bbx - headTubeTopX);
@@ -116,9 +116,9 @@
         // Seat Tube equation
         // y = m_seattube * x;
         // Top Tube equation
-        // y = (m_toptube * x) + (standoverY - bby);
+        // y = (m_toptube * x) + (standoverY);
 
-        var x_intercept = (standoverY - bby) / (m_seattube - m_toptube);
+        var x_intercept = ((standoverY - bby)) / (m_seattube - m_toptube);
         var y_intercept = m_seattube * x_intercept;
         x_intercept += bbx;
         y_intercept += bby;
@@ -138,7 +138,15 @@
         // To rear dropout
         context.lineTo(RD_X, RD_Y);
         // To top of seattube
-        context.lineTo(x_intercept, y_intercept); //context.lineTo(seatTubeAlmostTopX, seatTubeAlmostTopY);
+        
+        if(geometry.standover == 0)
+        {
+            context.lineTo(seatTubeAlmostTopX, seatTubeAlmostTopY);
+        } else {
+            context.lineTo(x_intercept, y_intercept);
+        
+        }
+        //context.lineTo(x_intercept, y_intercept); //context.lineTo(seatTubeAlmostTopX, seatTubeAlmostTopY);
         // To top of head tube
         context.lineTo(headTubeTopX, headTubeTopY); //context.lineTo(headTubeAlmostTopX, headTubeAlmostTopY);
         // To bottom of head tube
@@ -262,7 +270,7 @@
             {
 
                 <text>
-                var g = new BikeGeometry(@(item.bbdrop),@(item.stack),@(item.reach),@(item.wheelbase),@(item.chainstay),@(item.STA),@(item.STL),@(item.HTA),@(item.HTL),@(item.standover),@(item.wheeldiameter));
+        var g = new BikeGeometry(@(item.bbdrop),@(item.stack),@(item.reach),@(item.wheelbase),@(item.chainstay),@(item.STA),@(item.STL),@(item.HTA),@(item.HTL),@(item.wheeldiameter),@(item.standover));
                 bikes[i] = g;
                 var rgb = hexToRgb("#@(item.color)");
                 drawBike(context, 1, g, "rgba(" + rgb["r"] + "," +rgb["g"] + "," + rgb["b"] + ",0.8)");
