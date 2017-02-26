@@ -4,7 +4,11 @@
     ViewData["Title"] = "Details";
 }
 
+<script src="~/js/jscolor.js"></script>
+
 <h2>Details</h2>
+
+<canvas id="myCanvas" style="border:1px solid #eeeeee;"></canvas>
 
 <div>
     <h4>Geometry</h4>
@@ -25,6 +29,22 @@
         <dt>
             @Html.DisplayNameFor(model => model.size)
         </dt>
+
+
+        <dd>
+            @Html.DisplayFor(model => model.color)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.color)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.enabled)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.enabled)
+        </dt>
+
+
         <dd>
             @Html.DisplayFor(model => model.size)
         </dd>

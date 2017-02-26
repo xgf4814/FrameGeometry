@@ -1,0 +1,21 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<script src="~/js/jscolor.js"></script>
+
+<h2>Example 1</h2>
+	Color: <input class="jscolor" value="ab2567">
+
+<h2>Example 2</h2>
+<button class="jscolor {valueElement:'chosen-value', onFineChange:'setTextColor(this)'}">
+    Pick text color
+</button>
+	HEX value: <input id="chosen-value" value="000000">
+<script>
+	function setTextColor(picker) {
+		document.getElementsByTagName('body')[0].style.color = '#' + picker.toString()
+	}
+</script>

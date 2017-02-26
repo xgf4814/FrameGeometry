@@ -82,6 +82,10 @@ namespace FrameGeometry1.Data.Migrations
 
                     b.Property<double>("chainstay");
 
+                    b.Property<string>("color");
+
+                    b.Property<bool>("enabled");
+
                     b.Property<string>("make");
 
                     b.Property<string>("model");
@@ -95,6 +99,8 @@ namespace FrameGeometry1.Data.Migrations
                     b.Property<double>("standover");
 
                     b.Property<double>("wheelbase");
+
+                    b.Property<double>("wheeldiameter");
 
                     b.HasKey("ID");
 

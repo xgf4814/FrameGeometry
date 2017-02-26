@@ -26,5 +26,9 @@ namespace FrameGeometry1.Models
         [Display(Name = "head tube length")]
         public double HTL { get; set; }
         public double standover { get; set; }
+        public string color { get; set; }
+        public bool enabled { get; set; }
+        [Display(Name = "wheel + tire diameter")]
+        public double wheeldiameter { get; set; }
     }
 }

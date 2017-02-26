@@ -4,6 +4,8 @@
     ViewData["Title"] = "Edit";
 }
 
+<script src="~/js/jscolor.js"></script>
+
 <h2>Edit</h2>
 
 <form asp-action="Edit">
@@ -33,6 +35,29 @@
                 <span asp-validation-for="size" class="text-danger" />
             </div>
         </div>
+
+
+
+        <div class="form-group">
+            <label asp-for="color" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="color" class="jscolor" />
+                <span asp-validation-for="color" class="text-danger" />
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label asp-for="enabled" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="enabled" class="form-control" />
+                <span asp-validation-for="enabled" class="text-danger" />
+            </div>
+        </div>
+
+
+
+
         <div class="form-group">
             <label asp-for="HTA" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -103,6 +128,13 @@
             <div class="col-md-10">
                 <input asp-for="wheelbase" class="form-control" />
                 <span asp-validation-for="wheelbase" class="text-danger" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="wheeldiameter" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="wheeldiameter" class="form-control" />
+                <span asp-validation-for="wheeldiameter" class="text-danger" />
             </div>
         </div>
         <div class="form-group">

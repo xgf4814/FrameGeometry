@@ -53,7 +53,7 @@ namespace FrameGeometry1.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,make,model,reach,size,stack,standover,wheelbase")] Geometry geometry)
+        public async Task<IActionResult> Create([Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,make,model,reach,size,stack,standover,wheelbase,color,enabled,wheeldiameter")] Geometry geometry)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace FrameGeometry1.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,make,model,reach,size,stack,standover,wheelbase")] Geometry geometry)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,make,model,reach,size,stack,standover,wheelbase,color,enabled,wheeldiameter")] Geometry geometry)
         {
             if (id != geometry.ID)
             {

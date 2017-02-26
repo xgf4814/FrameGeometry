@@ -17,6 +17,21 @@
         this.y = R * Math.sin(theta * Math.PI / 180.0);
     }
 
+    function hexToRgb(hex) {
+        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
     var bbdrop;
     var stack;
     var reach;
@@ -27,8 +42,9 @@
     var HTA;
     var HTL;
     var standover;
+    var diameter;
     class BikeGeometry {
-        constructor(bbdrop, stack, reach, wheelbase, chainstay, STA, STL, HTA, HTL, standover) {
+        constructor(bbdrop, stack, reach, wheelbase, chainstay, STA, STL, HTA, HTL, standover, diameter) {
             this.bbdrop = bbdrop;
             this.stack = stack;
             this.reach = reach;
@@ -38,6 +54,7 @@
             this.STL = STL;
             this.HTA = HTA;
             this.HTL = HTL;
+            this.diameter = diameter;
             if (standover == undefined)
                 standover = 0;
             else
@@ -88,7 +105,7 @@
         var seatTubeAlmostTopY = bby - y;
         var FD_X = RD_X + geometry.wheelbase * scale;
         var FD_Y = RD_Y;
-        var standoverY = (RD_Y + ((622 / 2) + (35 * 2)) * scale) - geometry.standover * scale;
+        var standoverY = (RD_Y + (geometry.diameter/2) * scale) - geometry.standover * scale;
 
         var m_toptube = (headTubeTopY - standoverY) / (headTubeTopX - bbx);
         //var m_toptube = (standoverY - headTubeTopY) / (bbx - headTubeTopX);
@@ -212,7 +229,7 @@
         //context.fillStyle = "blue";
         //context.fillRect(0, 0, canvas.width, canvas.height);
 
-
+        /*
         var niner47 = new BikeGeometry(75.0, 535, 362, 1000, 430, 74.5, 430, 70.0, 105);
         var niner50 = new BikeGeometry(75.0, 556, 366, 1007, 430, 74.0, 460, 70.5, 125, 731);
         var niner53 = new BikeGeometry(75.0, 577, 374, 1017, 430, 73.5, 490, 71.0, 145, 754);
@@ -221,6 +238,7 @@
         var niner62 = new BikeGeometry(75.0, 634, 405, 1054, 430, 72.5, 580, 72.5, 205);
         var crux = new BikeGeometry(71.0, 554, 375, 1009, 425, 74, 485, 71.5, 125, 773);
         var stigamata = new BikeGeometry(69, 566, 383, 1019, 425, 74, 545, 71.5, 145);
+        */
 
         //drawBike(context,400,400,0.5,niner47,"rgba(209, 0, 0, 0.3)");
         //drawBike(context,1,niner50,"rgba(255, 0, 0, 0.8)"); //"rgba(255, 102, 34, 0.3)");
@@ -233,19 +251,25 @@
 
         //drawBike(context, 1, niner53, "rgba(255, 0, 0, 0.3)");
         //drawBike(context, 1, crux, "rgba(170, 240, 209, 0.8)");
-        
+
 
         var length = @Model.Count();
         var bikes = new Array(length);
         var i = 0;
         @foreach (var item in Model)
         {
-        <text>
-        var g = new BikeGeometry(@(item.bbdrop),@(item.stack),@(item.reach),@(item.wheelbase),@(item.chainstay),@(item.STA),@(item.STL),@(item.HTA),@(item.HTL),@(item.standover));
-        bikes[i] = g;
-        drawBike(context, 1, g, "rgba(170, 240, 209, 0.8)");
-        i++
-        </text>
+            if (item.enabled)
+            {
+
+                <text>
+                var g = new BikeGeometry(@(item.bbdrop),@(item.stack),@(item.reach),@(item.wheelbase),@(item.chainstay),@(item.STA),@(item.STL),@(item.HTA),@(item.HTL),@(item.standover),@(item.wheeldiameter));
+                bikes[i] = g;
+                var rgb = hexToRgb("#@(item.color)");
+                drawBike(context, 1, g, "rgba(" + rgb["r"] + "," +rgb["g"] + "," + rgb["b"] + ",0.8)");
+                i++
+                </text>
+            }
+
 
         }
 
