@@ -31,5 +31,6 @@ namespace FrameGeometry1.Models
         public bool enabled { get; set; }
         [Display(Name = "wheel + tire diameter")]
         public double wheeldiameter { get; set; }
+        public string userGUID { get; set; }
     }
 }

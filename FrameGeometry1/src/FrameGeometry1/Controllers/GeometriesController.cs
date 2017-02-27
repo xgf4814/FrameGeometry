@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FrameGeometry1.Data;
 using FrameGeometry1.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace FrameGeometry1.Controllers
 {
@@ -50,15 +51,22 @@ namespace FrameGeometry1.Controllers
             return View();
         }
 
+        public string getCurrentUserID()
+        {
+            return this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        }
+
         // POST: Geometries/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,color,enabled,make,model,reach,size,stack,standover,wheelbase,wheeldiameter")] Geometry geometry)
+        public async Task<IActionResult> Create([Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,color,enabled,make,model,reach,size,stack,standover,wheelbase,wheeldiameter,userGUID")] Geometry geometry)
         {
             if (ModelState.IsValid)
             {
+                var currentUser = 
+                geometry.userGUID = getCurrentUserID();
                 _context.Add(geometry);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -87,7 +95,7 @@ namespace FrameGeometry1.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,color,enabled,make,model,reach,size,stack,standover,wheelbase,wheeldiameter")] Geometry geometry)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,color,enabled,make,model,reach,size,stack,standover,wheelbase,wheeldiameter,userGUID")] Geometry geometry)
         {
             if (id != geometry.ID)
             {
