@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using FrameGeometry1.Data;
 using FrameGeometry1.Models;
 using FrameGeometry1.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace FrameGeometry1
 {
@@ -76,6 +77,14 @@ namespace FrameGeometry1
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            {
+                AuthenticationScheme = "MyCookieMiddlewareInstance",
+                LoginPath = new PathString("/Account/Login/"),
+                //AccessDeniedPath = new PathString("/Account/Forbidden/"),
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true
+            });
 
             app.UseMvc(routes =>
             {
