@@ -1,0 +1,281 @@
+@model IEnumerable<FrameGeometry.Models.Geometry>
+
+@{
+        ViewData["Title"] = "Index";
+}
+
+<script src="~/js/jscolor.js"></script>
+
+<h2>Index.</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<h3>Your bikes:</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.make)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.color)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.enabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HTA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HTL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.bbdrop)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.chainstay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reach)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.stack)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.standover)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.wheelbase)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.wheeldiameter)
+            </th>
+            <!--
+            <th>
+                Html.DisplayNameFor(model => model.userGUID)
+            </th>
+                -->
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @if (ViewData["UserGUID"].ToString() == item.userGUID)
+            {
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.make)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.model)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.size)
+                    </td>
+                    <td>
+                        <span style="background-color: #@(item.color)">#@(item.color)</span>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.enabled)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HTA)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HTL)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.STA)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.STL)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.bbdrop)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.chainstay)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.reach)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.stack)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.standover)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.wheelbase)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.wheeldiameter)
+                    </td>
+                    <!--
+                    <td>
+                        Html.DisplayFor(modelItem => item.userGUID)
+                    </td>
+                        -->
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
+
+<br />
+<h3>Others' bikes:</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.make)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.model)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.color)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.enabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HTA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HTL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.bbdrop)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.chainstay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reach)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.stack)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.standover)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.wheelbase)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.wheeldiameter)
+            </th>
+            <!--
+            <th>
+                Html.DisplayNameFor(model => model.userGUID)
+            </th>
+                -->
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            @if (ViewData["UserGUID"].ToString() != item.userGUID)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.make)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.model)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.size)
+                    </td>
+                    <td>
+                        <span style="background-color: #@(item.color)">#@(item.color)</span>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.enabled)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HTA)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HTL)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.STA)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.STL)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.bbdrop)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.chainstay)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.reach)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.stack)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.standover)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.wheelbase)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.wheeldiameter)
+                    </td>
+                    <!--
+                    <td>
+                        Html.DisplayFor(modelItem => item.userGUID)
+                    </td>
+                    -->
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>

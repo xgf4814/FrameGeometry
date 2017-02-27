@@ -1,0 +1,394 @@
+﻿@model IEnumerable<FrameGeometry.Models.Geometry>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<canvas id="myCanvas" style="border:1px solid #eeeeee;"></canvas>
+<script>
+
+
+
+    var x = 0.0;
+    var y = 0.0;
+    function polar2cartesian(R, theta) {
+        this.x = R * Math.cos(theta * Math.PI / 180.0);
+        this.y = R * Math.sin(theta * Math.PI / 180.0);
+    }
+
+    function hexToRgb(hex) {
+        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+        var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+            return r + r + g + g + b + b;
+        });
+
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    var bbdrop;
+    var stack;
+    var reach;
+    var wheelbase;
+    var chainstay;
+    var STA;
+    var STL;
+    var HTA;
+    var HTL;
+    var standover;
+    var diameter;
+    class BikeGeometry {
+        constructor(bbdrop, stack, reach, wheelbase, chainstay, STA, STL, HTA, HTL, diameter, standover) {
+            this.bbdrop = bbdrop;
+            this.stack = stack;
+            this.reach = reach;
+            this.wheelbase = wheelbase;
+            this.chainstay = chainstay;
+            this.STA = STA;
+            this.STL = STL;
+            this.HTA = HTA;
+            this.HTL = HTL;
+            this.diameter = diameter;
+            if (standover == undefined)
+                standover = 0;
+            else
+                this.standover = standover;
+        }
+    }
+
+
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+
+    // resize the canvas to fill browser window dynamically
+    window.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+        //canvas.width = window.innerWidth * .65;
+        canvas.height = window.innerHeight * .8;
+        //canvas.width = document.getElementById("div.container.body-content").clientWidth;
+        var containers = document.getElementsByClassName("container");
+        //console.log(containers[1]);
+        //canvas.height = containers[1].clientHeight;
+        canvas.width = containers[1].clientWidth - 32;
+
+        drawStuff();
+    }
+    resizeCanvas();
+
+    function drawBike(context, scale_in, geometry, strokeStyle) {
+        var scale = ((window.innerHeight > window.innerWidth) ? (window.innerWidth / 1400) : (window.innerHeight / 1400));
+        var bbx = canvas.width / 2.2; //window.innerWidth / 2.2;
+        var bby = canvas.height * .7 + (geometry.bbdrop * scale); //(window.innerHeight * 2 / 3) + (geometry.bbdrop * scale);
+        var headTubeTopX = bbx + geometry.reach * scale;
+        var headTubeTopY = bby - geometry.stack * scale;
+        polar2cartesian((20 * scale), geometry.HTA);
+        var headTubeAlmostTopX = headTubeTopX + x;
+        var headTubeAlmostTopY = headTubeTopY + y;
+        polar2cartesian(geometry.HTL * scale, geometry.HTA);
+        var headTubeBottomX = headTubeTopX + x;
+        var headTubeBottomY = headTubeTopY + y;
+        polar2cartesian(geometry.chainstay * scale, (90 - (Math.acos(geometry.bbdrop / geometry.chainstay) * 180) / Math.PI));
+        var RD_X = bbx - x;
+        var RD_Y = bby - y;
+        polar2cartesian(geometry.STL * scale, geometry.STA);
+        var seatTubeTopX = bbx - x;
+        var seatTubeTopY = bby - y;
+        polar2cartesian(((geometry.STL - 20) * scale), geometry.STA);
+        var seatTubeAlmostTopX = bbx - x;
+        var seatTubeAlmostTopY = bby - y;
+        var FD_X = RD_X + geometry.wheelbase * scale;
+        var FD_Y = RD_Y;
+        var standoverY = (RD_Y + (((geometry.diameter + 0)* scale)/2)) - ((geometry.standover) * scale);
+
+        var m_toptube = (headTubeTopY - standoverY) / (headTubeTopX - bbx);
+        //var m_toptube = (standoverY - headTubeTopY) / (bbx - headTubeTopX);
+        var m_seattube = (seatTubeTopY - bby) / (seatTubeTopX - bbx);
+        //console.log(m_toptube);
+        //console.log(m_seattube);
+        // treating BB as 0, 0 in cartesian coordinate system
+        // Seat Tube equation
+        // y = m_seattube * x;
+        // Top Tube equation
+        // y = (m_toptube * x) + (standoverY);
+
+        var x_intercept = ((standoverY - bby)) / (m_seattube - m_toptube);
+        var y_intercept = m_seattube * x_intercept;
+        x_intercept += bbx;
+        y_intercept += bby;
+
+        //console.log(bbx);
+        //console.log(bby);
+        //console.log(x_intercept);
+        //console.log(y_intercept);
+
+        context.strokeStyle = strokeStyle;
+
+        // Top of seattube
+        context.beginPath();
+
+        // To bottom bracket
+        context.moveTo(bbx, bby);
+        // To rear dropout
+        context.lineTo(RD_X, RD_Y);
+        // To top of seattube
+        
+        if(geometry.standover == 0)
+        {
+            context.lineTo(seatTubeAlmostTopX, seatTubeAlmostTopY);
+        } else {
+            context.lineTo(x_intercept, y_intercept);
+        
+        }
+        //context.lineTo(x_intercept, y_intercept); //context.lineTo(seatTubeAlmostTopX, seatTubeAlmostTopY);
+        // To top of head tube
+        context.lineTo(headTubeTopX, headTubeTopY); //context.lineTo(headTubeAlmostTopX, headTubeAlmostTopY);
+        // To bottom of head tube
+        context.lineTo(headTubeBottomX, headTubeBottomY);
+        // To bottom bracket
+        context.lineTo(bbx, bby);
+        // To top of seattube
+        context.closePath();
+        context.moveTo(bbx, bby);
+        context.lineTo(seatTubeTopX, seatTubeTopY);
+        context.moveTo(headTubeBottomX, headTubeBottomY);
+        context.lineTo(FD_X, FD_Y);
+        //context.moveTo(headTubeAlmostTopX, headTubeAlmostTopY);
+        //context.lineTo(headTubeTopX, headTubeTopY);
+        context.lineWidth = 10;
+        context.stroke();
+
+        // Draw the wheelbase
+        context.beginPath();
+        context.moveTo(RD_X, RD_Y);
+        context.lineTo(FD_X, FD_Y);
+        context.lineWidth = 1;
+        context.stroke();
+
+        // Draw the stack
+        context.beginPath();
+        context.moveTo(bbx, bby);
+        context.lineTo(bbx, headTubeTopY);
+        context.lineWidth = 1;
+        context.stroke();
+
+        // Draw the reach
+        context.beginPath();
+        context.moveTo(bbx, headTubeTopY);
+        context.lineTo(headTubeTopX, headTubeTopY);
+        context.lineWidth = 1;
+        context.stroke();
+
+        /*
+        // Draw the standover
+        context.beginPath();
+        //context.moveTo(bbx, bby);
+        //context.lineTo(bbx, standoverY);
+        //context.lineWidth = 10;
+        context.moveTo(bbx, standoverY);
+        context.lineTo(bbx+(50*scale), standoverY);
+        context.lineWidth = 1;
+        context.stroke();
+
+        // Draw the adjusted top tube
+        context.beginPath();
+        //context.moveTo(x_intercept, y_intercept);
+        context.moveTo(bbx, standoverY);
+        context.lineTo(headTubeTopX, headTubeTopY);
+        context.lineWidth = 1;
+        context.stroke();
+
+        context.beginPath();
+        context.moveTo(x_intercept, y_intercept);
+        //context.moveTo(bbx, standoverY);
+        context.lineTo(headTubeTopX, headTubeTopY);
+        context.lineWidth = 1;
+        context.stroke();
+
+
+        var x_test = -300;
+        var y_test = m_seattube * x_test;
+
+        context.beginPath();
+        context.moveTo(bbx, bby); // 0, 0 aka 0, B
+        context.lineTo(bbx + x_test, bby + y_test);
+        context.lineWidth = 1;
+        context.stroke();
+
+        var x_test = 1000;
+        var y_test = (m_toptube * x_test) + (standoverY - bby);
+
+        context.beginPath();
+        context.moveTo(bbx, standoverY); // 0, B
+        context.lineTo(bbx + x_test,  bby + y_test);
+        context.lineWidth = 1;
+        context.stroke();
+        */
+
+    }
+
+    function drawStuff() {
+        //context.fillStyle = "blue";
+        //context.fillRect(0, 0, canvas.width, canvas.height);
+
+        /*
+        var niner47 = new BikeGeometry(75.0, 535, 362, 1000, 430, 74.5, 430, 70.0, 105);
+        var niner50 = new BikeGeometry(75.0, 556, 366, 1007, 430, 74.0, 460, 70.5, 125, 731);
+        var niner53 = new BikeGeometry(75.0, 577, 374, 1017, 430, 73.5, 490, 71.0, 145, 754);
+        var niner56 = new BikeGeometry(75.0, 592, 384, 1030, 430, 73.0, 520, 71.5, 165);
+        var niner59 = new BikeGeometry(75.0, 613, 398, 1045, 430, 73.0, 550, 72.0, 185);
+        var niner62 = new BikeGeometry(75.0, 634, 405, 1054, 430, 72.5, 580, 72.5, 205);
+        var crux = new BikeGeometry(71.0, 554, 375, 1009, 425, 74, 485, 71.5, 125, 773);
+        var stigamata = new BikeGeometry(69, 566, 383, 1019, 425, 74, 545, 71.5, 145);
+        */
+
+        //drawBike(context,400,400,0.5,niner47,"rgba(209, 0, 0, 0.3)");
+        //drawBike(context,1,niner50,"rgba(255, 0, 0, 0.8)"); //"rgba(255, 102, 34, 0.3)");
+        //drawBike(context,1,niner53,"rgba(255, 0, 0, 0.3)"); //"rgba(255, 218, 33, 0.3)");
+        //drawBike(context,400,400,0.5,niner56,"rgba(51, 221, 0, 0.3)");
+        //drawBike(context,400,400,0.5,niner59,"rgba(17, 51, 204, 0.3)");
+        //drawBike(context,400,400,0.5,niner62,"rgba(34, 0, 102, 0.3)");
+        //drawBike(context,1,niner50,"rgba(255, 0, 0, 0.8)");
+        //drawBike(context,1,stigamata, "rgba(100,100,100,0.8)");
+
+        //drawBike(context, 1, niner53, "rgba(255, 0, 0, 0.3)");
+        //drawBike(context, 1, crux, "rgba(170, 240, 209, 0.8)");
+
+
+
+        
+        @foreach (var item in Model)
+        {
+            if (item.enabled)
+            {
+
+                <text>
+                var g = new BikeGeometry(@(item.bbdrop),@(item.stack),@(item.reach),@(item.wheelbase),@(item.chainstay),@(item.STA),@(item.STL),@(item.HTA),@(item.HTL),@(item.wheeldiameter),@(item.standover));
+                var rgb = hexToRgb("#@(item.color)");
+                drawBike(context, 1, g, "rgba(" + rgb["r"] + "," +rgb["g"] + "," + rgb["b"] + ",0.8)");
+                </text>
+            }
+
+
+        }
+        
+    }
+
+
+
+    /*
+    var scale = 0.5;
+    var seatTubeAngle = 74.0;
+    var seatTubeLength = 460.0 * scale;
+    var stack = 556.0 * scale;
+    var reach = 366.0 * scale;
+    var wheelbase = 1007.0 * scale;
+    var headTubeAngle = 74.0;
+    var headTubeLength = 125.0 * scale;
+    var bbdrop = 75.0 * scale;
+    var chainStayLength = 430.0 * scale;
+    var bottomBracketX = 400.0;
+    var bottomBracketY = 400.0;
+    */
+
+
+    // Draw the seat tube
+    /*
+    context.beginPath();
+    context.moveTo(bottomBracketX, bottomBracketY);
+    context.lineTo(seatTubeTopX, seatTubeTopY);
+    context.lineWidth = 10;
+    context.stroke();
+    */
+
+    /*
+    // Draw the headtube
+    polar2cartesian(headTubeLength, headTubeAngle);
+    var headTubeBottomX = headTubeTopX + x;
+    var headTubeBottomY = headTubeTopY + y;
+    context.beginPath();
+    context.moveTo(headTubeTopX, headTubeTopY);
+    context.lineTo(headTubeBottomX, headTubeBottomY);
+    context.lineWidth = 15;
+    context.stroke();
+
+    // Draw the downtube
+    context.beginPath();
+    context.moveTo(bottomBracketX, bottomBracketY);
+    context.lineTo(headTubeBottomX, headTubeBottomY);
+    context.lineWidth = 15;
+    context.stroke();
+
+    // Draw the chainstay
+    polar2cartesian(chainStayLength, (90 - (Math.acos(bbdrop/chainStayLength) * 180)/Math.PI));
+    var rearDropoutX = bottomBracketX - x;
+    var rearDropoutY = bottomBracketY - y;
+    context.beginPath();
+    context.moveTo(bottomBracketX, bottomBracketY);
+    //context.lineTo(bottomBracketX + 100, bottomBracketY + 100);
+    context.lineTo(rearDropoutX, rearDropoutY);
+    context.lineWidth = 15;
+    context.stroke();
+
+    // Draw the seat tube
+    polar2cartesian(seatTubeLength,seatTubeAngle);
+    var seatTubeTopX = bottomBracketX - x;
+    var seatTubeTopY = bottomBracketY - y;
+    context.beginPath();
+    context.moveTo(bottomBracketX, bottomBracketY);
+    context.lineTo(seatTubeTopX, seatTubeTopY);
+    context.lineWidth = 15;
+    context.stroke();
+
+    // Draw the seat stay
+    context.beginPath();
+    context.moveTo(rearDropoutX, rearDropoutY);
+    context.lineTo(seatTubeTopX, seatTubeTopY);
+    context.lineWidth = 15;
+    context.stroke();
+
+    // Draw the top tube
+    context.beginPath();
+    context.moveTo(seatTubeTopX, seatTubeTopY);
+    context.lineTo(headTubeTopX, headTubeTopY);
+    context.lineWidth = 15;
+    context.stroke();
+
+    // Draw the fork
+    var forkDropoutX = rearDropoutX + wheelbase;
+    var forkDropoutY = rearDropoutY;
+    context.beginPath();
+    context.moveTo(headTubeBottomX, headTubeBottomY);
+    context.lineTo(forkDropoutX, forkDropoutY);
+    context.lineWidth = 15;
+    context.stroke();
+
+    // Draw the wheelbase
+    context.beginPath();W
+    context.moveTo(rearDropoutX, rearDropoutY);
+    context.lineTo(forkDropoutX, forkDropoutY);
+    context.lineWidth = 5;
+    context.stroke();
+
+    // Draw the stack
+    context.beginPath();
+    context.moveTo(bottomBracketX, bottomBracketY);
+    context.lineTo(bottomBracketX, headTubeTopY);
+    context.lineWidth = 5;
+    context.stroke();
+
+    // Draw the reach
+    context.beginPath();
+    context.moveTo(bottomBracketX, headTubeTopY);
+    context.lineTo(headTubeTopX, headTubeTopY);
+    context.lineWidth = 5;
+    context.stroke();
+    */
+
+</script>
