@@ -81,7 +81,7 @@ namespace FrameGeometry1
             {
                 AuthenticationScheme = "MyCookieMiddlewareInstance",
                 LoginPath = new PathString("/Account/Login/"),
-                //AccessDeniedPath = new PathString("/Account/Forbidden/"),
+                //AccessDeniedPath = new PathString("/Account/Forbidden/"), // PEACE OUT 
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true
             });
