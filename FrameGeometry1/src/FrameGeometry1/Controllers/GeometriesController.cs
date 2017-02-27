@@ -9,6 +9,7 @@ using FrameGeometry1.Data;
 using FrameGeometry1.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace FrameGeometry1.Controllers
 {
@@ -17,14 +18,18 @@ namespace FrameGeometry1.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public GeometriesController(ApplicationDbContext context)
+        private UserManager<ApplicationUser> _userManager;
+
+        public GeometriesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;    
         }
 
         // GET: Geometries
         public async Task<IActionResult> Index()
         {
+            ViewData["UserGUID"] = _userManager.GetUserId(User);
             return View(await _context.Geometry.ToListAsync());
         }
 
@@ -51,11 +56,6 @@ namespace FrameGeometry1.Controllers
             return View();
         }
 
-        public string getCurrentUserID()
-        {
-            return this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        }
-
         // POST: Geometries/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -65,8 +65,7 @@ namespace FrameGeometry1.Controllers
         {
             if (ModelState.IsValid)
             {
-                var currentUser = 
-                geometry.userGUID = getCurrentUserID();
+                geometry.userGUID = _userManager.GetUserId(User);
                 _context.Add(geometry);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
