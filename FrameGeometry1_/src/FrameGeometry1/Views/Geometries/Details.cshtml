@@ -1,0 +1,116 @@
+@model FrameGeometry1.Models.Geometry
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<script src="~/js/jscolor.js"></script>
+
+<h2>Details</h2>
+
+<canvas id="myCanvas" style="border:1px solid #eeeeee;"></canvas>
+
+<div>
+    <h4>Geometry</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.make)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.make)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.model)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.model)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.size)
+        </dt>
+
+
+        <dd>
+            @Html.DisplayFor(model => model.color)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.color)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.enabled)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.enabled)
+        </dt>
+
+
+        <dd>
+            @Html.DisplayFor(model => model.size)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.HTA)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HTA)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.HTL)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.HTL)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.STA)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.STA)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.STL)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.STL)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.bbdrop)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.bbdrop)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.chainstay)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.chainstay)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.reach)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.reach)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.stack)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.stack)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.standover)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.standover)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.wheelbase)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.wheelbase)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

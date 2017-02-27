@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FrameGeometry1.Data;
 using FrameGeometry1.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FrameGeometry1.Controllers
 {
+    [Authorize]
     public class GeometriesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -53,7 +55,7 @@ namespace FrameGeometry1.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,make,model,reach,size,stack,standover,wheelbase,color,enabled,wheeldiameter")] Geometry geometry)
+        public async Task<IActionResult> Create([Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,color,enabled,make,model,reach,size,stack,standover,wheelbase,wheeldiameter")] Geometry geometry)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +87,7 @@ namespace FrameGeometry1.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,make,model,reach,size,stack,standover,wheelbase,color,enabled,wheeldiameter")] Geometry geometry)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,HTA,HTL,STA,STL,bbdrop,chainstay,color,enabled,make,model,reach,size,stack,standover,wheelbase,wheeldiameter")] Geometry geometry)
         {
             if (id != geometry.ID)
             {
