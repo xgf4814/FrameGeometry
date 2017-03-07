@@ -32,5 +32,11 @@ namespace FrameGeometry.Models
         [Display(Name = "wheel + tire diameter")]
         public double wheeldiameter { get; set; }
         public string userGUID { get; set; }
+
+        public override string ToString()
+        {
+            return make + " " + model + ", size " + size;
+        }
+
     }
 }
