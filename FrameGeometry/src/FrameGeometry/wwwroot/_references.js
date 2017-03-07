@@ -1,5 +1,7 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="js/jscolor.js" />
+/// <reference path="js/selectize.js" />
+/// <reference path="js/selectize.min.js" />
 /// <reference path="js/site.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />
 /// <reference path="lib/jquery/dist/jquery.js" />
