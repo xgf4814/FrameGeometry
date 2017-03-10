@@ -86,10 +86,12 @@ namespace FrameGeometry.Controllers
             {
                 return NotFound();
             }
+            /*
             if (geometry.userGUID != _userManager.GetUserId(User) && _userManager.GetUserName(User) != "xanderfiss@gmail.com")
             {
                 return RedirectToAction("Index");
             }
+            */
             return View(geometry);
         }
 
@@ -125,10 +127,12 @@ namespace FrameGeometry.Controllers
                 }
                 return RedirectToAction("Index");
             }
+            /*
             if (geometry.userGUID != _userManager.GetUserId(User) && _userManager.GetUserName(User) != "xanderfiss@gmail.com")
             {
                 return RedirectToAction("Index");
             }
+            */
             return View(geometry);
         }
 
@@ -145,10 +149,12 @@ namespace FrameGeometry.Controllers
             {
                 return NotFound();
             }
+            /*
             if (geometry.userGUID != _userManager.GetUserId(User) && _userManager.GetUserName(User) != "xanderfiss@gmail.com")
             {
                 return RedirectToAction("Index");
             }
+            */
             return View(geometry);
         }
 
