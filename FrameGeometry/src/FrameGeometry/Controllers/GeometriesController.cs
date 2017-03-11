@@ -10,6 +10,8 @@ using FrameGeometry.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace FrameGeometry.Controllers
 {
@@ -71,6 +73,33 @@ namespace FrameGeometry.Controllers
                 return RedirectToAction("Index");
             }
             return View(geometry);
+        }
+
+        // GET: Geometries/Upload
+        public IActionResult Upload()
+        {
+            return View();
+        }
+
+        [HttpPost("UploadFiles")]
+        public async Task<IActionResult> Post(IFormFile file_in)
+        {
+
+            // full path to file in temp location
+            var filePath = Path.GetTempFileName();
+
+            if (file_in.Length > 0)
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file_in.CopyToAsync(stream);
+                }
+            }
+
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+
+            return Ok(new { filePath });
         }
 
         // GET: Geometries/Edit/5
