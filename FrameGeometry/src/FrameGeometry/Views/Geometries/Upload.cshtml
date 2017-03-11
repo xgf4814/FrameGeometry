@@ -4,15 +4,88 @@
     ViewData["Title"] = "Upload";
 }
 
+<script src="~/lib/jquery/dist/jquery.js"></script>
+
 <h2>Upload</h2>
+
+<link rel="stylesheet" href="~/css/filebutton.css" type="text/css">
 
 <form asp-action="Upload">
     <div class="form-horizontal">
         <h4>Geometry</h4>
         <hr />
     </div>
-</form>
+    <div class="form-group">
+        <div class="col-md-10">
+            Choose your completed <a href="../GeometryTemplate.csv">CSV sheet</a> of geometries, then click Upload.
+            <br />   <br />
+        </div>
+        <div class="col-md-10">
+            <!--
+            <input type="file" name="file_in" class="btn btn-default btn-file"/>
+            <br />
+                -->
 
+            <!--
+            <label class="btn btn-primary">
+                Browse&hellip; <input type="file" style="display: none;">
+            </label>
+            <br /><br />
+                -->
+
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <span class="btn btn-primary">
+                        Browse&hellip; <input type="file" style="display: none;" multiple>
+                    </span>
+                </label>
+                <input type="text" class="form-control" readonly>
+            </div>
+            <br />
+
+        </div>
+
+
+
+        <div class="col-md-10">
+            <input type="submit" value="Upload" class="btn btn-default" disabled />
+        </div>
+    </div>
+</form>
+<br/><br /><br /><br /><br /><br />
+
+<script>
+    $(function () {
+
+        // We can attach the `fileselect` event to all file inputs on the page
+        $(document).on('change', ':file', function () {
+            var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+
+        // We can watch for our custom `fileselect` event like this
+        $(document).ready(function () {
+            $(':file').on('fileselect', function (event, numFiles, label) {
+
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log) alert(log);
+                }
+
+            });
+        });
+
+    });
+</script>
+
+
+<!--
         <form method="post" enctype="multipart/form-data" asp-controller="UploadFiles" asp-action="Index">
             <div class="row">
                 <div class="col-md-10">
@@ -32,3 +105,4 @@
 
             </div>
         </form>
+    -->
