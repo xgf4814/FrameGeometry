@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-FrameGeometry-5dff5803-9e5b-46f4-bc2d-f0644cc3cb74",
 
   "dependencies": {
@@ -43,7 +43,8 @@
     "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview2-final",
       "type": "build"
-    }
+    },
+    "CsvHelper": "2.16.3"
   },
 
   "tools": {
