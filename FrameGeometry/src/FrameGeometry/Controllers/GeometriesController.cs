@@ -1,17 +1,14 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FrameGeometry.Data;
 using FrameGeometry.Models;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using CsvHelper;
 
 namespace FrameGeometry.Controllers
 {
@@ -81,6 +78,7 @@ namespace FrameGeometry.Controllers
             return View();
         }
 
+        /*
         [HttpPost]
         public async Task<IActionResult> Upload2(IFormFile file_in)
         {
@@ -101,6 +99,7 @@ namespace FrameGeometry.Controllers
             //return Ok(new { filePath });
             return View(file_in);
         }
+        */
 
         [HttpPost("UploadFiles")]
         public async Task<IActionResult> Post(IFormFile file_in)
@@ -111,12 +110,17 @@ namespace FrameGeometry.Controllers
             if (file_in.Length > 0)
             {
                 using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var reader = new StreamReader(stream))
+                using (var parser = new CsvParser(reader))
                 {
                     await file_in.CopyToAsync(stream);
+                    var csv = new CsvReader(reader);
+                    var records = csv.GetRecords<Geometry>().ToList();
+                    
                 }
             }
 
-
+            
 
             Geometry g = new Geometry
             {
@@ -140,7 +144,8 @@ namespace FrameGeometry.Controllers
             };
 
             _context.Add(g);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             //return RedirectToAction("Index");
             
@@ -148,8 +153,8 @@ namespace FrameGeometry.Controllers
             // process uploaded files
             // Don't rely on or trust the FileName property without validation.
 
-            return Ok(new { filePath });
-            //return RedirectToAction("Index");
+            //return Ok(new { filePath });
+            return RedirectToAction("Index");
             //return await Index();
 
         }

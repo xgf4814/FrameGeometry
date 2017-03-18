@@ -12,8 +12,7 @@
 
 <!--<form asp-action="Upload">-->
 <!--<form method="post">-->
-<form method="post" enctype="multipart/form-data"
-      asp-controller="Geometries" asp-action="Index">
+<form method="post" enctype="multipart/form-data" asp-controller="UploadFiles" asp-action="Index">
     <div class="form-horizontal">
         <h4>Geometry</h4>
         <hr />
@@ -38,7 +37,7 @@
             <div class="input-group">
                 <label class="input-group-btn">
                     <span class="btn btn-primary">
-                        Browse&hellip; <input type="file" style="display: none;">
+                        Browse&hellip; <input type="file" name="file_in" style="display: none;">
                     </span>
                 </label>
                 <input type="text" class="form-control" readonly>
