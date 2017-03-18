@@ -81,10 +81,9 @@ namespace FrameGeometry.Controllers
             return View();
         }
 
-        [HttpPost("UploadFiles")]
-        public async Task<IActionResult> Post(IFormFile file_in)
+        [HttpPost]
+        public async Task<IActionResult> Upload2(IFormFile file_in)
         {
-
             // full path to file in temp location
             var filePath = Path.GetTempFileName();
 
@@ -99,7 +98,60 @@ namespace FrameGeometry.Controllers
             // process uploaded files
             // Don't rely on or trust the FileName property without validation.
 
+            //return Ok(new { filePath });
+            return View(file_in);
+        }
+
+        [HttpPost("UploadFiles")]
+        public async Task<IActionResult> Post(IFormFile file_in)
+        {
+            // full path to file in temp location
+            var filePath = Path.GetTempFileName();
+
+            if (file_in.Length > 0)
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file_in.CopyToAsync(stream);
+                }
+            }
+
+
+
+            Geometry g = new Geometry
+            {
+                make = "Specialized",
+                model = "Crux",
+                size = "52",
+                color = "AAFD01",
+                enabled = true,
+                HTA = 71.5,
+                HTL = 125,
+                STA = 74,
+                STL = 500,
+                bbdrop = 71,
+                chainstay = 425,
+                reach = 375,
+                stack = 554,
+                standover = 773,
+                wheelbase = 1009,
+                wheeldiameter = 688,
+                userGUID = _userManager.GetUserId(User)
+            };
+
+            _context.Add(g);
+            await _context.SaveChangesAsync();
+
+            //return RedirectToAction("Index");
+            
+
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+
             return Ok(new { filePath });
+            //return RedirectToAction("Index");
+            //return await Index();
+
         }
 
         // GET: Geometries/Edit/5

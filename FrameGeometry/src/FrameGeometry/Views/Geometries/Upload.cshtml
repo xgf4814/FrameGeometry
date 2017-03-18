@@ -1,4 +1,4 @@
-@model IEnumerable<FrameGeometry.Models.Geometry>
+@model Microsoft.AspNetCore.Http.IFormFile
 
 @{
     ViewData["Title"] = "Upload";
@@ -10,7 +10,10 @@
 
 <link rel="stylesheet" href="~/css/filebutton.css" type="text/css">
 
-<form asp-action="Upload">
+<!--<form asp-action="Upload">-->
+<!--<form method="post">-->
+<form method="post" enctype="multipart/form-data"
+      asp-controller="Geometries" asp-action="Index">
     <div class="form-horizontal">
         <h4>Geometry</h4>
         <hr />
@@ -25,7 +28,6 @@
             <input type="file" name="file_in" class="btn btn-default btn-file"/>
             <br />
                 -->
-
             <!--
             <label class="btn btn-primary">
                 Browse&hellip; <input type="file" style="display: none;">
@@ -36,7 +38,7 @@
             <div class="input-group">
                 <label class="input-group-btn">
                     <span class="btn btn-primary">
-                        Browse&hellip; <input type="file" style="display: none;" multiple>
+                        Browse&hellip; <input type="file" style="display: none;">
                     </span>
                 </label>
                 <input type="text" class="form-control" readonly>
@@ -50,6 +52,7 @@
         <div class="col-md-10">
             <input type="submit" value="Upload" class="btn btn-default" disabled />
         </div>
+
     </div>
 </form>
 <br/><br /><br /><br /><br /><br />
@@ -74,6 +77,7 @@
 
                 if (input.length) {
                     input.val(log);
+                    $('input[type="submit"]').removeAttr('disabled');
                 } else {
                     if (log) alert(log);
                 }
