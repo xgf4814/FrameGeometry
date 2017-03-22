@@ -107,27 +107,70 @@ namespace FrameGeometry.Controllers
             // full path to file in temp location
             var filePath = Path.GetTempFileName();
 
+            /*
             if (file_in.Length > 0)
             {
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 using (var reader = new StreamReader(stream))
                 using (var parser = new CsvParser(reader))
                 {
-                    await file_in.CopyToAsync(stream);
+                    //await file_in.CopyToAsync(stream);
+                    file_in.CopyTo(stream);
                     var csv = new CsvReader(reader);
+                    csv.Configuration.HasHeaderRecord = false;
                     var records = csv.GetRecords<Geometry>().ToList();
-                    
+                    foreach (Geometry g in records)
+                    {
+                        _context.Add(g);
+                    }
+                    _context.SaveChanges();
                 }
             }
+            */
+
+            /*
+            var stream = new FileStream(filePath, FileMode.Create);
+            await file_in.CopyToAsync(stream);
+            var reader = new StreamReader(stream);
+            string s = reader.ReadLine();
+            */
 
             
+            var s = string.Empty;
+            using (var reader = new StreamReader(file_in.OpenReadStream()))
+            {
+                //s = reader.ReadToEnd();
+                var csv = new CsvReader(reader);
+                //csv.Configuration.HasHeaderRecord = true;
+                //csv.Read();
+                csv.ReadHeader();
+                var records = csv.GetRecords<Geometry>();
+                foreach (Geometry g in records)
+                {
+                    _context.Add(g);
+                }
+                _context.SaveChanges();
+            }
+            
+            
 
+            /*
+            var csv = new CsvReader(reader);
+            var records = csv.GetRecords<Geometry>().ToList();
+            foreach (Geometry g in records)
+            {
+                _context.Add(g);
+            }
+            _context.SaveChanges();
+            */
+
+            /*
             Geometry g = new Geometry
             {
                 make = "Specialized",
                 model = "Crux",
                 size = "52",
-                color = "AAFD01",
+                color = "FFFFFF",
                 enabled = true,
                 HTA = 71.5,
                 HTL = 125,
@@ -144,17 +187,19 @@ namespace FrameGeometry.Controllers
             };
 
             _context.Add(g);
+            
             //await _context.SaveChangesAsync();
             _context.SaveChanges();
+            */
 
             //return RedirectToAction("Index");
-            
+
 
             // process uploaded files
             // Don't rely on or trust the FileName property without validation.
 
-            //return Ok(new { filePath });
-            return RedirectToAction("Index");
+            return Ok(new { filePath, s, file_in.Length });
+            //return RedirectToAction("Index");
             //return await Index();
 
         }
