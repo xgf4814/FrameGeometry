@@ -95,7 +95,7 @@ namespace FrameGeometry.Controllers
                     g.userGUID = _userManager.GetUserId(User);
                     _context.Add(g);
                 }
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             
             
