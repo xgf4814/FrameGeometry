@@ -78,29 +78,6 @@ namespace FrameGeometry.Controllers
             return View();
         }
 
-        /*
-        [HttpPost]
-        public async Task<IActionResult> Upload2(IFormFile file_in)
-        {
-            // full path to file in temp location
-            var filePath = Path.GetTempFileName();
-
-            if (file_in.Length > 0)
-            {
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file_in.CopyToAsync(stream);
-                }
-            }
-
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
-
-            //return Ok(new { filePath });
-            return View(file_in);
-        }
-        */
-
         [HttpPost("UploadFiles")]
         public async Task<IActionResult> Post(IFormFile file_in)
         {
@@ -115,6 +92,7 @@ namespace FrameGeometry.Controllers
                 var records = csv.GetRecords<Geometry>();
                 foreach (Geometry g in records)
                 {
+                    g.userGUID = _userManager.GetUserId(User);
                     _context.Add(g);
                 }
                 _context.SaveChanges();
