@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using CsvHelper;
+using System.Collections;
 
 namespace FrameGeometry.Controllers
 {
@@ -104,6 +105,23 @@ namespace FrameGeometry.Controllers
 
         }
 
+        public IActionResult DownloadIndex()
+        {
+
+            MemoryStream ms = new MemoryStream();
+            BufferedStream bs = new BufferedStream(ms);
+            var logWriter = new StreamWriter(bs);
+            var csv = new CsvWriter(logWriter);
+            IEnumerable records = _context.Geometry.ToList();
+            csv.WriteRecords(records);
+            logWriter.Flush();
+            bs.Position = 0;
+            FileStreamResult fileStreamResult = new FileStreamResult(bs, "application/x-msdownload");
+            fileStreamResult.FileDownloadName = "GeometriesIndex.csv";
+            return fileStreamResult;            
+
+        }
+        
         // GET: Geometries/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

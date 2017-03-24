@@ -35,6 +35,13 @@
 
 <h4><a asp-action="Create">Create</a> a new frame geometry, or <a asp-action="Upload">upload</a> a completed CSV sheet of geometries.</h4>
 
+@{Html.BeginForm("DownloadIndex", "Geometries", FormMethod.Post);
+    {
+        <input type="submit" class="Button" value="Download Index" />
+        Html.EndForm();
+    }
+}
+
 <h3>Your bikes:</h3>
 
 <table class="table">
