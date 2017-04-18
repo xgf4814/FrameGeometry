@@ -17,32 +17,69 @@
 </div>
 
 <script>
-    
-    var $select = $('#select-tools').selectize({
+
+    var $select;
+
+    var eventHandler = function(name) {
+        return function() {
+            //console.log(name, arguments);
+            //$('#log').append('<div><span class="name">' + name + '</span></div>');
+            
+            //alert("HELLO");
+            //var foo = $('#select-tools').length;
+            //alert($('#select').toArray());
+            //alert($("#select option:selected").text());
+            //var test =  $('#select-tools').selectize()[0].selectize.getValue() 
+            
+            //(display = new IEnumerable<Geometry>());
+
+            var test = selectizeControl.getValue();
+            for (i = 0; i < test.length; i++) { 
+                alert(test[i]);
+            }
+                //List<Geometry> list = new List<Geometry>();
+                
+            }
+
+            /*
+            var test = selectizeControl.getValue();
+            for (i = 0; i < test.length; i++) { 
+                alert(test[i]);
+            }
+            */
+
+            //alert();
+
+            //var something = selectizeControl.getItem(selectizeControl.getValue()).text()‌​;
+            //alert(something);
+
+        };
+    };
+
+    $select = $('#select-tools').selectize({
         maxItems: null,
         valueField: 'id',
         labelField: 'title',
         searchField: 'title',
         options: [
-            @foreach(Geometry bike in Model)
+            @foreach (Geometry bike in Model)
             {
                 <text>
-                { id: @(bike.ID), title: '@(bike.ToString())', url: 'http://en.wikipedia.org/wiki/Spectrometers'},
+                { id: @(bike.ID), title: '@(bike.ToString())', url: 'http://framegeometry.azurewebsites.net'},
                 </text>
             }
         ],
-        create: false
-					
+        create: false,
+        onItemAdd       : eventHandler('onItemAdd'),
+        onItemRemove    : eventHandler('onItemRemove')
     });
 
-    
+    var selectizeControl = $select[0].selectize;
 
 </script>
 
 <canvas id="myCanvas" style="border:1px solid #eeeeee;"></canvas>
 <script>
-
-
 
     var x = 0.0;
     var y = 0.0;
@@ -297,7 +334,7 @@
 
 
         
-        @foreach (var item in Model)
+        @foreach (var item in Model) 
         {
             if (item.enabled)
             {
