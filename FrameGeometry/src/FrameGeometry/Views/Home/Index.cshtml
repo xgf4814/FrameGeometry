@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Home Page";
+    List<int> IDs = new List<int>();
 }
 
 <link rel="stylesheet" href="~/css/selectize.css">
@@ -15,68 +16,6 @@
     <label for="select-tools">Bicycles:</label>
     <select id="select-tools" multiple placeholder="Pick a bicycle frame..."></select>
 </div>
-
-<script>
-
-    var $select;
-
-    var eventHandler = function(name) {
-        return function() {
-            //console.log(name, arguments);
-            //$('#log').append('<div><span class="name">' + name + '</span></div>');
-            
-            //alert("HELLO");
-            //var foo = $('#select-tools').length;
-            //alert($('#select').toArray());
-            //alert($("#select option:selected").text());
-            //var test =  $('#select-tools').selectize()[0].selectize.getValue() 
-            
-            //(display = new IEnumerable<Geometry>());
-
-            var test = selectizeControl.getValue();
-            for (i = 0; i < test.length; i++) { 
-                alert(test[i]);
-            }
-                //List<Geometry> list = new List<Geometry>();
-                
-            }
-
-            /*
-            var test = selectizeControl.getValue();
-            for (i = 0; i < test.length; i++) { 
-                alert(test[i]);
-            }
-            */
-
-            //alert();
-
-            //var something = selectizeControl.getItem(selectizeControl.getValue()).text()‌​;
-            //alert(something);
-
-        };
-    };
-
-    $select = $('#select-tools').selectize({
-        maxItems: null,
-        valueField: 'id',
-        labelField: 'title',
-        searchField: 'title',
-        options: [
-            @foreach (Geometry bike in Model)
-            {
-                <text>
-                { id: @(bike.ID), title: '@(bike.ToString())', url: 'http://framegeometry.azurewebsites.net'},
-                </text>
-            }
-        ],
-        create: false,
-        onItemAdd       : eventHandler('onItemAdd'),
-        onItemRemove    : eventHandler('onItemRemove')
-    });
-
-    var selectizeControl = $select[0].selectize;
-
-</script>
 
 <canvas id="myCanvas" style="border:1px solid #eeeeee;"></canvas>
 <script>
@@ -140,18 +79,35 @@
     // resize the canvas to fill browser window dynamically
     window.addEventListener('resize', resizeCanvas, false);
 
-    function resizeCanvas() {
-        //canvas.width = window.innerWidth * .65;
-        canvas.height = window.innerHeight * .8;
-        //canvas.width = document.getElementById("div.container.body-content").clientWidth;
-        var containers = document.getElementsByClassName("container");
-        //console.log(containers[1]);
-        //canvas.height = containers[1].clientHeight;
-        canvas.width = containers[1].clientWidth - 32;
+    var value;
+    function setValue(value_in) {
+        value = value_in;
+    }
 
+    var eventHandler = function() {
+        return function() {
+            var test = selectizeControl.getValue();
+            setValue(test);
+            drawStuff();
+            //alert("EventHandler");
+
+        }
+    };
+
+    function resizeCanvas() {
+        canvas.height = window.innerHeight * .8;
+        var containers = document.getElementsByClassName("container");
+        canvas.width = containers[1].clientWidth - 32;
         drawStuff();
+        //eventHandler();
     }
     resizeCanvas();
+
+    var $select;
+    var selectizeControl;
+
+
+
 
     function drawBike(context, scale_in, geometry, strokeStyle) {
         var scale = ((window.innerHeight > window.innerWidth) ? (window.innerWidth / 1400) : (window.innerHeight / 1400));
@@ -177,61 +133,33 @@
         var FD_X = RD_X + geometry.wheelbase * scale;
         var FD_Y = RD_Y;
         var standoverY = (RD_Y + (((geometry.diameter + 0)* scale)/2)) - ((geometry.standover) * scale);
-
         var m_toptube = (headTubeTopY - standoverY) / (headTubeTopX - bbx);
-        //var m_toptube = (standoverY - headTubeTopY) / (bbx - headTubeTopX);
         var m_seattube = (seatTubeTopY - bby) / (seatTubeTopX - bbx);
-        //console.log(m_toptube);
-        //console.log(m_seattube);
-        // treating BB as 0, 0 in cartesian coordinate system
-        // Seat Tube equation
-        // y = m_seattube * x;
-        // Top Tube equation
-        // y = (m_toptube * x) + (standoverY);
-
         var x_intercept = ((standoverY - bby)) / (m_seattube - m_toptube);
         var y_intercept = m_seattube * x_intercept;
         x_intercept += bbx;
         y_intercept += bby;
-
-        //console.log(bbx);
-        //console.log(bby);
-        //console.log(x_intercept);
-        //console.log(y_intercept);
-
         context.strokeStyle = strokeStyle;
-
-        // Top of seattube
         context.beginPath();
-
-        // To bottom bracket
         context.moveTo(bbx, bby);
-        // To rear dropout
         context.lineTo(RD_X, RD_Y);
-        // To top of seattube
-        
+
         if(geometry.standover == 0)
         {
             context.lineTo(seatTubeAlmostTopX, seatTubeAlmostTopY);
         } else {
             context.lineTo(x_intercept, y_intercept);
-        
+
         }
-        //context.lineTo(x_intercept, y_intercept); //context.lineTo(seatTubeAlmostTopX, seatTubeAlmostTopY);
-        // To top of head tube
-        context.lineTo(headTubeTopX, headTubeTopY); //context.lineTo(headTubeAlmostTopX, headTubeAlmostTopY);
-        // To bottom of head tube
+
+        context.lineTo(headTubeTopX, headTubeTopY);
         context.lineTo(headTubeBottomX, headTubeBottomY);
-        // To bottom bracket
         context.lineTo(bbx, bby);
-        // To top of seattube
         context.closePath();
         context.moveTo(bbx, bby);
         context.lineTo(seatTubeTopX, seatTubeTopY);
         context.moveTo(headTubeBottomX, headTubeBottomY);
         context.lineTo(FD_X, FD_Y);
-        //context.moveTo(headTubeAlmostTopX, headTubeAlmostTopY);
-        //context.lineTo(headTubeTopX, headTubeTopY);
         context.lineWidth = 10;
         context.stroke();
 
@@ -256,210 +184,52 @@
         context.lineWidth = 1;
         context.stroke();
 
-        /*
-        // Draw the standover
-        context.beginPath();
-        //context.moveTo(bbx, bby);
-        //context.lineTo(bbx, standoverY);
-        //context.lineWidth = 10;
-        context.moveTo(bbx, standoverY);
-        context.lineTo(bbx+(50*scale), standoverY);
-        context.lineWidth = 1;
-        context.stroke();
-
-        // Draw the adjusted top tube
-        context.beginPath();
-        //context.moveTo(x_intercept, y_intercept);
-        context.moveTo(bbx, standoverY);
-        context.lineTo(headTubeTopX, headTubeTopY);
-        context.lineWidth = 1;
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(x_intercept, y_intercept);
-        //context.moveTo(bbx, standoverY);
-        context.lineTo(headTubeTopX, headTubeTopY);
-        context.lineWidth = 1;
-        context.stroke();
-
-
-        var x_test = -300;
-        var y_test = m_seattube * x_test;
-
-        context.beginPath();
-        context.moveTo(bbx, bby); // 0, 0 aka 0, B
-        context.lineTo(bbx + x_test, bby + y_test);
-        context.lineWidth = 1;
-        context.stroke();
-
-        var x_test = 1000;
-        var y_test = (m_toptube * x_test) + (standoverY - bby);
-
-        context.beginPath();
-        context.moveTo(bbx, standoverY); // 0, B
-        context.lineTo(bbx + x_test,  bby + y_test);
-        context.lineWidth = 1;
-        context.stroke();
-        */
-
     }
+
+
+    $select = $('#select-tools').selectize({
+        maxItems: null,
+        valueField: 'id',
+        labelField: 'title',
+        searchField: 'title',
+        options: [
+            @foreach (Geometry bike in Model)
+    {
+        <text>
+        { id: @(bike.ID), title: '@(bike.ToString())', url: 'http://framegeometry.azurewebsites.net'},
+        </text>
+    }
+    ],
+    create: false,
+    //onItemAdd       : drawStuff(),
+    //onItemRemove    : drawStuff()
+    onItemAdd       : eventHandler(),
+    onItemRemove    : eventHandler()
+    });
+    selectizeControl = $select[0].selectize;
 
     function drawStuff() {
-        //context.fillStyle = "blue";
-        //context.fillRect(0, 0, canvas.width, canvas.height);
 
-        /*
-        var niner47 = new BikeGeometry(75.0, 535, 362, 1000, 430, 74.5, 430, 70.0, 105);
-        var niner50 = new BikeGeometry(75.0, 556, 366, 1007, 430, 74.0, 460, 70.5, 125, 731);
-        var niner53 = new BikeGeometry(75.0, 577, 374, 1017, 430, 73.5, 490, 71.0, 145, 754);
-        var niner56 = new BikeGeometry(75.0, 592, 384, 1030, 430, 73.0, 520, 71.5, 165);
-        var niner59 = new BikeGeometry(75.0, 613, 398, 1045, 430, 73.0, 550, 72.0, 185);
-        var niner62 = new BikeGeometry(75.0, 634, 405, 1054, 430, 72.5, 580, 72.5, 205);
-        var crux = new BikeGeometry(71.0, 554, 375, 1009, 425, 74, 485, 71.5, 125, 773);
-        var stigamata = new BikeGeometry(69, 566, 383, 1019, 425, 74, 545, 71.5, 145);
-        */
+        //var test = selectizeControl.getValue();
+        if(value != null){
 
-        //drawBike(context,400,400,0.5,niner47,"rgba(209, 0, 0, 0.3)");
-        //drawBike(context,1,niner50,"rgba(255, 0, 0, 0.8)"); //"rgba(255, 102, 34, 0.3)");
-        //drawBike(context,1,niner53,"rgba(255, 0, 0, 0.3)"); //"rgba(255, 218, 33, 0.3)");
-        //drawBike(context,400,400,0.5,niner56,"rgba(51, 221, 0, 0.3)");
-        //drawBike(context,400,400,0.5,niner59,"rgba(17, 51, 204, 0.3)");
-        //drawBike(context,400,400,0.5,niner62,"rgba(34, 0, 102, 0.3)");
-        //drawBike(context,1,niner50,"rgba(255, 0, 0, 0.8)");
-        //drawBike(context,1,stigamata, "rgba(100,100,100,0.8)");
-
-        //drawBike(context, 1, niner53, "rgba(255, 0, 0, 0.3)");
-        //drawBike(context, 1, crux, "rgba(170, 240, 209, 0.8)");
-
-
-
-        
-        @foreach (var item in Model) 
-        {
-            if (item.enabled)
-            {
-
-                <text>
-                var g = new BikeGeometry(@(item.bbdrop),@(item.stack),@(item.reach),@(item.wheelbase),@(item.chainstay),@(item.STA),@(item.STL),@(item.HTA),@(item.HTL),@(item.wheeldiameter),@(item.standover));
-                var rgb = hexToRgb("#@(item.color)");
-                drawBike(context, 1, g, "rgba(" + rgb["r"] + "," +rgb["g"] + "," + rgb["b"] + ",0.8)");
-                </text>
-            }
-
-
+            for (i = 0; i < value.length; i++) {
+                @foreach (var item in Model)
+                        {
+                            <text>
+                        if(@(item.ID) == value[i]){
+                            var g = new BikeGeometry(@(item.bbdrop),@(item.stack),@(item.reach),@(item.wheelbase),@(item.chainstay),@(item.STA),@(item.STL),@(item.HTA),@(item.HTL),@(item.wheeldiameter),@(item.standover));
+                            var rgb = hexToRgb("#@(item.color)");
+                            drawBike(context, 1, g, "rgba(" + rgb["r"] + "," +rgb["g"] + "," + rgb["b"] + ",0.8)");
+                        }
+                            </text>
+                        }
+                }
         }
-        
+
+
     }
 
 
-
-    /*
-    var scale = 0.5;
-    var seatTubeAngle = 74.0;
-    var seatTubeLength = 460.0 * scale;
-    var stack = 556.0 * scale;
-    var reach = 366.0 * scale;
-    var wheelbase = 1007.0 * scale;
-    var headTubeAngle = 74.0;
-    var headTubeLength = 125.0 * scale;
-    var bbdrop = 75.0 * scale;
-    var chainStayLength = 430.0 * scale;
-    var bottomBracketX = 400.0;
-    var bottomBracketY = 400.0;
-    */
-
-
-    // Draw the seat tube
-    /*
-    context.beginPath();
-    context.moveTo(bottomBracketX, bottomBracketY);
-    context.lineTo(seatTubeTopX, seatTubeTopY);
-    context.lineWidth = 10;
-    context.stroke();
-    */
-
-    /*
-    // Draw the headtube
-    polar2cartesian(headTubeLength, headTubeAngle);
-    var headTubeBottomX = headTubeTopX + x;
-    var headTubeBottomY = headTubeTopY + y;
-    context.beginPath();
-    context.moveTo(headTubeTopX, headTubeTopY);
-    context.lineTo(headTubeBottomX, headTubeBottomY);
-    context.lineWidth = 15;
-    context.stroke();
-
-    // Draw the downtube
-    context.beginPath();
-    context.moveTo(bottomBracketX, bottomBracketY);
-    context.lineTo(headTubeBottomX, headTubeBottomY);
-    context.lineWidth = 15;
-    context.stroke();
-
-    // Draw the chainstay
-    polar2cartesian(chainStayLength, (90 - (Math.acos(bbdrop/chainStayLength) * 180)/Math.PI));
-    var rearDropoutX = bottomBracketX - x;
-    var rearDropoutY = bottomBracketY - y;
-    context.beginPath();
-    context.moveTo(bottomBracketX, bottomBracketY);
-    //context.lineTo(bottomBracketX + 100, bottomBracketY + 100);
-    context.lineTo(rearDropoutX, rearDropoutY);
-    context.lineWidth = 15;
-    context.stroke();
-
-    // Draw the seat tube
-    polar2cartesian(seatTubeLength,seatTubeAngle);
-    var seatTubeTopX = bottomBracketX - x;
-    var seatTubeTopY = bottomBracketY - y;
-    context.beginPath();
-    context.moveTo(bottomBracketX, bottomBracketY);
-    context.lineTo(seatTubeTopX, seatTubeTopY);
-    context.lineWidth = 15;
-    context.stroke();
-
-    // Draw the seat stay
-    context.beginPath();
-    context.moveTo(rearDropoutX, rearDropoutY);
-    context.lineTo(seatTubeTopX, seatTubeTopY);
-    context.lineWidth = 15;
-    context.stroke();
-
-    // Draw the top tube
-    context.beginPath();
-    context.moveTo(seatTubeTopX, seatTubeTopY);
-    context.lineTo(headTubeTopX, headTubeTopY);
-    context.lineWidth = 15;
-    context.stroke();
-
-    // Draw the fork
-    var forkDropoutX = rearDropoutX + wheelbase;
-    var forkDropoutY = rearDropoutY;
-    context.beginPath();
-    context.moveTo(headTubeBottomX, headTubeBottomY);
-    context.lineTo(forkDropoutX, forkDropoutY);
-    context.lineWidth = 15;
-    context.stroke();
-
-    // Draw the wheelbase
-    context.beginPath();W
-    context.moveTo(rearDropoutX, rearDropoutY);
-    context.lineTo(forkDropoutX, forkDropoutY);
-    context.lineWidth = 5;
-    context.stroke();
-
-    // Draw the stack
-    context.beginPath();
-    context.moveTo(bottomBracketX, bottomBracketY);
-    context.lineTo(bottomBracketX, headTubeTopY);
-    context.lineWidth = 5;
-    context.stroke();
-
-    // Draw the reach
-    context.beginPath();
-    context.moveTo(bottomBracketX, headTubeTopY);
-    context.lineTo(headTubeTopX, headTubeTopY);
-    context.lineWidth = 5;
-    context.stroke();
-    */
 
 </script>
