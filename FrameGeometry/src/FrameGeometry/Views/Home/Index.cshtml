@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="~/css/selectize.css">
 <link rel="stylesheet" href="~/css/selectize.bootstrap3.css">
 <script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
 <script src="~/js/selectize.js"></script>
 <script>var theme = 'bootstrap3';</script>
 
@@ -195,6 +196,7 @@
 
 
     $select = $('#select-tools').selectize({
+        plugins: ['drag_drop'],
         maxItems: null,
         valueField: 'id',
         labelField: 'title',
