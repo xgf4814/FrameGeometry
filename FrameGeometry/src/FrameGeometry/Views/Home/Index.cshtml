@@ -103,6 +103,12 @@
     }
     resizeCanvas();
 
+    function clearCanvas() {
+        canvas.height = window.innerHeight * .8;
+        var containers = document.getElementsByClassName("container");
+        canvas.width = containers[1].clientWidth - 32;    
+    }
+
     var $select;
     var selectizeControl;
 
@@ -110,6 +116,7 @@
 
 
     function drawBike(context, scale_in, geometry, strokeStyle) {
+
         var scale = ((window.innerHeight > window.innerWidth) ? (window.innerWidth / 1400) : (window.innerHeight / 1400));
         var bbx = canvas.width / 2.2; //window.innerWidth / 2.2;
         var bby = canvas.height * .7 + (geometry.bbdrop * scale); //(window.innerHeight * 2 / 3) + (geometry.bbdrop * scale);
@@ -210,6 +217,8 @@
 
     function drawStuff() {
 
+        clearCanvas();
+
         //var test = selectizeControl.getValue();
         if(value != null){
 
@@ -220,7 +229,7 @@
                         if(@(item.ID) == value[i]){
                             var g = new BikeGeometry(@(item.bbdrop),@(item.stack),@(item.reach),@(item.wheelbase),@(item.chainstay),@(item.STA),@(item.STL),@(item.HTA),@(item.HTL),@(item.wheeldiameter),@(item.standover));
                             var rgb = hexToRgb("#@(item.color)");
-                            drawBike(context, 1, g, "rgba(" + rgb["r"] + "," +rgb["g"] + "," + rgb["b"] + ",0.8)");
+                            drawBike(context, 1, g, "rgba(" + rgb["r"] + "," +rgb["g"] + "," + rgb["b"] + ",0.6)");
                         }
                             </text>
                         }

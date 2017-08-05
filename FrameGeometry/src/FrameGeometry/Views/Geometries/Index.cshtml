@@ -42,7 +42,7 @@
     }
 }
 
-<h3>Your bikes:</h3>
+<!--<h3>Your bikes:</h3>-->
 
 <table class="table">
     <thead>
@@ -177,7 +177,7 @@
 </table>
 
 <br />
-<h3>Other bikes:</h3>
+<!--<h3>Other bikes:</h3>
 
 <table class="table">
     <thead>
@@ -231,18 +231,19 @@
             <th>
                 @Html.DisplayNameFor(model => model.wheeldiameter)
             </th>
-            <!--
+            
             <th>
                 Html.DisplayNameFor(model => model.userGUID)
             </th>
-                -->
+                
             <th></th>
         </tr>
     </thead>
+    -->
     <tbody>
         @foreach (var item in Model)
         {
-            @if (ViewData["UserGUID"].ToString() != item.userGUID)
+            @if (false) //(ViewData["UserGUID"].ToString() != item.userGUID)
             {
                 <tr>
                     <td>
